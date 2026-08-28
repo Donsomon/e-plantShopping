@@ -10,15 +10,19 @@ const CartItem = ({ onContinueShopping }) => {
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
     let total = 0;
+    
     Cart.forEach((item) => {
-        total += parseFloat(item.cost.substring(1))* item.quantity;
+        itemCost = parseFloat(item.cost.substring(1));
+        total += itemCost * item.quantity;
+
     });
+
     return total;
  
   };
 
   const handleContinueShopping = (e) => {
-    callFunction(onContinueShopping(e))
+    onContinueShopping(e);
   };
 
   const handleCheckoutShopping = (e) => {
@@ -26,19 +30,22 @@ const CartItem = ({ onContinueShopping }) => {
   };  
 
   const handleIncrement = (item) => {
-    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
-    console.log("Call A");
+    const updatedItem = { ...item };
+    
+    updatedItem.quantity++;
+    dispatch(updateQuantity(updatedItem));
   };
 
   const handleDecrement = (item) => {
+    const updatedItem = { ...item };
 
-    if (item.quantity > 0) {
+    if (updatedItem.quantity == 1) {
+        dispatch(removeItem(updatedItem));
 
-    dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
-    console.log("Call B");
+    } else {
+        updatedItem.quantity--;
+        dispatch(updateQuantity(updatedItem));
     }
-    dispatch(removeItem(item));
-    console.log("Call C");
 };
 
   const handleRemove = (item) => {
@@ -48,7 +55,8 @@ const CartItem = ({ onContinueShopping }) => {
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
     let total = 0;
-    total += parseFloat(item.cost.substring(1))* item.quantity;
+    const itemCost = parseFloat(item.cost.substring(1));
+    total += itemCost * item.quantity;
 
     return total;
  
